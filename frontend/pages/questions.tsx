@@ -1,25 +1,49 @@
 //Add Types Later
-
-
-import { useState } from "react";
+//Remove any types
+import { Fragment, useState } from "react";
 import type { NextPage } from "next";
-import { Modal } from "@mui/material";
+import { Modal, Typography } from "@mui/material";
 import { Field, Form, Formik, FieldArray } from "formik";
-const Quesions: NextPage = () => {
+import axios from "axios";
+
+const Quesions: NextPage = (props:any) => {
   const [show, setShow] = useState<boolean>(false);
+
   const handleShow = (): void => {
     setShow((prv: boolean): boolean => !prv);
   };
+  const URL: string = "http://localhost:8000/question";
 
-const postFunction=async(val:any):Promise<void>=>{
-console.log(val.tag, val.question);
+  const postFunction = async (val: any): Promise<void> => {
 
-}
+
+
+
+    const res = await axios.post(URL, {
+      question: val.question,
+      tags: val.tag,
+    });
+  };
+
+
+const renderData=props.questionData.map(ele=> (
+<>
+
+<Fragment key={ele._id}>
+<Typography>
+{ele.question}
+</Typography>
+
+</Fragment>
+
+</>
+))
 
   return (
     <>
       <div>Quesions</div>
       <h2 onClick={handleShow}>Add Ques</h2>
+{renderData}
       {show && (
         <>
           <Modal
@@ -34,11 +58,9 @@ console.log(val.tag, val.question);
                 question: "",
                 tags: [""],
               }}
-              onSubmit={async(val) => {
-await postFunction(val)
-
-
-            }}
+              onSubmit={async (val) => {
+                await postFunction(val);
+              }}
               render={(props: any) => (
                 <>
                   <Form>
@@ -86,4 +108,17 @@ await postFunction(val)
     </>
   );
 };
+
+export async function getServerSideProps() {
+
+const res=await axios.get("http://localhost:8000/question")
+console.log(res.data);
+const questionData:any =  res.data
+
+  return {
+    props: {questionData},
+    }
+}
+
+
 export default Quesions;

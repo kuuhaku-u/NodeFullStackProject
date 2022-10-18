@@ -7,7 +7,6 @@ interface dataI {
     passWord: string
 }
 loginRoute.post("/login", async (req: Request, res: Response) => {
-    console.log(req.body)
     const { firstName, passWord } = req.body
     const loggedinUser: any = await Signup.findOne({ firstName: firstName });
     const isLoggedIn = await bcrypt.compare(passWord, loggedinUser.passWord)
@@ -18,7 +17,6 @@ res.send({msg:"loogi=ed in", code:200})
 }else{
 res.send({msg:"not found", code:500})
 }
-        // await isLoggedIn && console.log(loggedinUser);
     }
     catch (err) {
         res.status(500).send("user not found");

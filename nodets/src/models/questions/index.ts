@@ -3,12 +3,12 @@ import { Schema, model } from 'mongoose';
 
 
 interface Iques  {
-    title: string;
+    question: string;
     tags: any;
 }
 
 const questionSchema = new  Schema <Iques>({
-  title: {
+  question: {
     type: String,
     required: true,
   },

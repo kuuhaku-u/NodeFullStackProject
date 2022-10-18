@@ -7,7 +7,7 @@ interface values {
     firstName: string;
     passWord: string;
 }
-const URL: string = " http://localhost:8000/register"
+const URL: string = "http://localhost:8000/register"
 const Signup: NextPage = () => {
 
 const router=useRouter()

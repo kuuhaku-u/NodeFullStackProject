@@ -3,6 +3,7 @@ import cors from 'cors'
 import signupRoute from './routes/signup/signup';
 import mongoose from 'mongoose';
 import loginRoute from './routes/login/index';
+import QuestionRoute from './routes/questions';
 const app:Application = express();
 const PORT =  8000;
 app.use(cors())
@@ -24,6 +25,8 @@ mongoose.connect(url, options).then(() => console.log("databse connected"));
 
 app.use('/', signupRoute)
 app.use('/', loginRoute)
+app.use('/', QuestionRoute)
+
 // app.get('/',  (req:Request, res:Response):void=> {
 // res.send("ok")
 // })
