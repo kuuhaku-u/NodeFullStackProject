@@ -1,16 +1,24 @@
-import express, { Request, Response, Application } from 'express';
+import express, { Request, Response } from 'express';
+import bcrypt from 'bcrypt'
 const signupRoute = express.Router();
-signupRoute.post("/register", async (req, res) => {
-    try {
-console.log(req.body);
-      res.send("saved");
-    } catch (err){
-      res.status(500).send(err);
+import signup from '../../models/signup/index'
+signupRoute.post("/register", async (req: Request, res: Response) => {
+    // const saltRounds:number = 10
+    interface dataI {
+        firstName: string,
+        passWord: string
     }
-  });
-
-// loginRoute.get("/", (req:Request, res:Response): void=>{
-// res.send("sup")
-
-// })
+    const salt = await bcrypt.genSalt(10);
+    const { firstName, passWord } = req.body
+    const secpassword = await bcrypt.hash(passWord, salt);
+    const data: dataI = { firstName,passWord : secpassword }
+    // now we set user password to hashed password
+    const newUser = new signup(data);
+    try {
+        await newUser.save()
+        res.send(newUser);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
 export default signupRoute;
