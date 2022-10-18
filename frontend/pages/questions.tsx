@@ -1,12 +1,21 @@
 //Add Types Later
-//Remove any types
-import { Fragment, useState } from "react";
+//Remove anytype
+import {
+  Fragment,
+  JSXElementConstructor,
+  Key,
+  ReactElement,
+  ReactFragment,
+  ReactPortal,
+  useState,
+} from "react";
 import type { NextPage } from "next";
+import Link from "next/link";
 import { Modal, Typography } from "@mui/material";
 import { Field, Form, Formik, FieldArray } from "formik";
 import axios from "axios";
 
-const Quesions: NextPage = (props:any) => {
+const Quesions: NextPage = (props: any) => {
   const [show, setShow] = useState<boolean>(false);
 
   const handleShow = (): void => {
@@ -15,35 +24,40 @@ const Quesions: NextPage = (props:any) => {
   const URL: string = "http://localhost:8000/question";
 
   const postFunction = async (val: any): Promise<void> => {
-
-
-
-
     const res = await axios.post(URL, {
       question: val.question,
       tags: val.tag,
     });
   };
 
-
-const renderData=props.questionData.map(ele=> (
-<>
-
-<Fragment key={ele._id}>
-<Typography>
-{ele.question}
-</Typography>
-
-</Fragment>
-
-</>
-))
+  const renderData = props.questionData.map(
+    (ele: {
+      _id: Key | null | undefined;
+      question:
+        | string
+        | number
+        | boolean
+        | ReactElement<any, string | JSXElementConstructor<any>>
+        | ReactFragment
+        | ReactPortal
+        | null
+        | undefined;
+    }) => (
+      <>
+        <Fragment key={ele._id}>
+          <Typography>
+            <Link href={`/question/${ele._id}`}>{ele.question}</Link>
+          </Typography>
+        </Fragment>
+      </>
+    )
+  );
 
   return (
     <>
       <div>Quesions</div>
       <h2 onClick={handleShow}>Add Ques</h2>
-{renderData}
+      {renderData}
       {show && (
         <>
           <Modal
@@ -110,15 +124,13 @@ const renderData=props.questionData.map(ele=> (
 };
 
 export async function getServerSideProps() {
-
-const res=await axios.get("http://localhost:8000/question")
-console.log(res.data);
-const questionData:any =  res.data
+  const res = await axios.get("http://localhost:8000/question");
+  console.log(res.data);
+  const questionData: any = res.data;
 
   return {
-    props: {questionData},
-    }
+    props: { questionData },
+  };
 }
-
 
 export default Quesions;

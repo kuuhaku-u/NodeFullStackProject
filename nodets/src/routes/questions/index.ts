@@ -24,4 +24,17 @@ QuestionRoute.get("/question", async (req: Request, res: Response) => {
       res.status(500).send(err);
     }
   });
-export default QuestionRoute;
+  QuestionRoute.get("/question/:id", async (req: Request, res: Response) => {
+    const questionID = req.params.id;
+    const foundedQuestoin: any = await Question.find({_id:questionID});
+console.log(foundedQuestoin, "pp");
+
+    try {
+      res.send(foundedQuestoin);
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  });
+
+
+  export default QuestionRoute;
