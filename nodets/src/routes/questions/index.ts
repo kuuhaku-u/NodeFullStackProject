@@ -1,13 +1,15 @@
 import express, { Request, Response } from "express";
+import { Types } from "mongoose";
 import Question from "../../models/questions";
 const QuestionRoute = express.Router();
 QuestionRoute.post("/question", async (req: Request, res: Response) => {
   interface dataQ {
     question: string;
     tags: any;
+    userID:Types.ObjectId
   }
-  const { question, tags } = req.body;
-  const data: dataQ = { question: question, tags: tags };
+  const { question, tags ,userID} = req.body;
+  const data: dataQ = { question: question, tags: tags, userID: userID};
   const addQuestoin = new Question(data);
   try {
     await addQuestoin.save();
@@ -27,7 +29,6 @@ QuestionRoute.get("/question", async (req: Request, res: Response) => {
   QuestionRoute.get("/question/:id", async (req: Request, res: Response) => {
     const questionID = req.params.id;
     const foundedQuestoin: any = await Question.find({_id:questionID});
-console.log(foundedQuestoin, "pp");
 
     try {
       res.send(foundedQuestoin);

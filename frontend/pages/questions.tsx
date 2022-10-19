@@ -24,10 +24,15 @@ const Quesions: NextPage = (props: any) => {
   const URL: string = "http://localhost:8000/question";
 
   const postFunction = async (val: any): Promise<void> => {
-    const res = await axios.post(URL, {
-      question: val.question,
-      tags: val.tag,
-    });
+    if (typeof window !== "undefined") {
+      const userID: any = localStorage.getItem("userId");
+
+      const res = await axios.post(URL, {
+        question: val.question,
+        tags: val.tag,
+        userID: userID,
+      });
+    }
   };
 
   const renderData = props.questionData.map(

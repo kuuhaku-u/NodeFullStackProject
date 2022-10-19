@@ -11,5 +11,5 @@ const signup =  new Schema<IUser>({
   passWord: { type: String, required: true },
 
 });
-const Signup = mongoose.model("User", signup);
+const Signup = mongoose.model("user", signup);
 export default Signup
