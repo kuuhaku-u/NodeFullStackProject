@@ -14,10 +14,10 @@ const answerSchema = new Schema<Ians>({
     type: mongoose.Schema.Types.ObjectId,
     ref: "question",
   },
-    userID: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "user",    },
-
+  userID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+  },
 });
 const Answer = mongoose.model("answer", answerSchema);
 export default Answer;
