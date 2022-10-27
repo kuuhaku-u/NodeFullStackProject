@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { Types } from 'mongoose';
+import pointChecker from '../../contoller/pointsChecker';
 import Question from '../../models/questions';
 import Signup from '../../models/signup';
 import Tags from '../../models/tags';
@@ -18,32 +19,42 @@ QuestionRoute.post(
       tags: tags,
       userID: userID,
     };
-    const addQuestoin = new Question(data);
-    try {
-      await addQuestoin.save();
-      const idOfQuestion = addQuestoin._id;
-      const questTags = req.body.tags;
-      questTags.forEach(async (element: unknown) => {
-        const checking = await Tags.findOne({
-          tag: element,
-        });
-        if (checking) {
-          const query = { tag: element };
-          const updateDocument = {
-            $push: { qurstionID: idOfQuestion },
-          };
-          await Tags.updateOne(query, updateDocument);
-          res.send(200);
-        } else {
-          Tags.create({
+    const result: boolean = await pointChecker(userID);
+    console.log('--', result);
+
+    if (result) {
+      const addQuestoin = new Question(data);
+      try {
+        await addQuestoin.save();
+        const idOfQuestion = addQuestoin._id;
+        const questTags = req.body.tags;
+        questTags.forEach(async (element: unknown) => {
+          const checking = await Tags.findOne({
             tag: element,
-            qurstionID: idOfQuestion,
           });
-          res.status(200).send('saved');
-        }
-      });
-    } catch (error) {
-      res.status(500).send(error);
+          if (checking) {
+            const query = { tag: element };
+            const updateDocument = {
+              $push: { qurstionID: idOfQuestion },
+            };
+            await Tags.updateOne(query, updateDocument);
+          } else {
+            Tags.create({
+              tag: element,
+              qurstionID: idOfQuestion,
+            });
+          }
+        });
+		res.status(200).send("ok")
+      } catch (error) {
+        res.status(500).send(error);
+      }
+    } else {
+      try {
+        res.status(404).send('you need points');
+      } catch (error: unknown) {
+        res.status(500).send(error);
+      }
     }
   },
 );
@@ -105,7 +116,7 @@ QuestionRoute.post(
 
         await Signup.updateOne(query, updateDocument);
 
-        res.send('200');
+        res.status(200).send('200');
       } else {
         res.status(200).send('not found');
       }
@@ -123,7 +134,7 @@ QuestionRoute.post(
     const { userId } = req.body;
 
     try {
-      const checking:any = await Question.findOne({
+      const checking: any = await Question.findOne({
         _id: questionID,
       });
 
@@ -131,8 +142,7 @@ QuestionRoute.post(
         _id: checking.userID,
       });
 
-	  console.log(userToFound);
-
+      console.log(userToFound);
 
       if (checking) {
         //  point >= 0.5 && point=0.5

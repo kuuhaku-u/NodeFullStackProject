@@ -28,6 +28,7 @@ const questionSchema = new Schema<Iques>({
     type: Number,
     default: 0,
   },
+
 });
 const Question = mongoose.model('Question', questionSchema);
 export default Question;
